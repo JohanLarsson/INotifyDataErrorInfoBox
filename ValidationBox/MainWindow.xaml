@@ -27,9 +27,16 @@
                    Text="Search text" />
         <TextBox x:Name="SearchTextBox"
                  Grid.Row="0"
-                 Grid.Column="1"
-                 Text="{Binding SearchText,
-                                UpdateSourceTrigger=PropertyChanged}" />
+                 Grid.Column="1">
+            <TextBox.Text>
+                <Binding Path="SearchText"
+                         UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <local:MustStartWithValidationRule StartsWith="a" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
         <ItemsControl Grid.Row="0"
                       Grid.Column="2"
                       Margin="6,0,0,0"

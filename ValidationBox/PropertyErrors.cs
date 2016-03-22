@@ -46,6 +46,7 @@
 
         public void Remove(string propertyName, Predicate<object> filter)
         {
+            Debug.Assert(this.type.GetProperty(propertyName) != null, $"The type {this.type.Name} does not have a property named {propertyName}");
             List<object> errors;
             if (this.propertyErrors.TryGetValue(propertyName, out errors))
             {
