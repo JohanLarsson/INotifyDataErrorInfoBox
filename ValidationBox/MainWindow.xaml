@@ -1,0 +1,53 @@
+﻿<Window x:Class="ValidationBox.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:ValidationBox"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="MainWindow"
+        Width="525"
+        Height="350"
+        mc:Ignorable="d">
+    <Window.DataContext>
+        <local:ViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0"
+                   Grid.Column="0"
+                   Text="Search text" />
+        <TextBox x:Name="SearchTextBox"
+                 Grid.Row="0"
+                 Grid.Column="1"
+                 Text="{Binding SearchText,
+                                UpdateSourceTrigger=PropertyChanged,
+                                ValidatesOnNotifyDataErrors=True,
+                                ValidatesOnDataErrors=True}" />
+        <ItemsControl Grid.Row="0"
+                      Grid.Column="2"
+                      Margin="6,0,0,0"
+                      ItemsSource="{Binding Path=(Validation.Errors),
+                                            ElementName=SearchTextBox}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type ValidationError}">
+                    <TextBlock Foreground="Red"
+                               Text="{Binding ErrorContent}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Button Grid.Row="1"
+                Grid.Column="1"
+                Command="{Binding SearchCommand}"
+                Content="Search" />
+    </Grid>
+</Window>
