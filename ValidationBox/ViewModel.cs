@@ -17,19 +17,10 @@
         {
             this.SearchCommand = new RelayCommand(this.Search);
             this.errors = new PropertyErrors(this);
+            this.errors.ErrorsChanged += (_, e) => this.OnErrorsChanged(e);
         }
 
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged
-        {
-            add
-            {
-                this.errors.ErrorsChanged += value;
-            }
-            remove
-            {
-                this.errors.ErrorsChanged -= value;
-            }
-        }
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -69,6 +60,11 @@
             }
 
             MessageBox.Show("searching");
+        }
+
+        protected virtual void OnErrorsChanged(DataErrorsChangedEventArgs e)
+        {
+            this.ErrorsChanged?.Invoke(this, e);
         }
     }
 }

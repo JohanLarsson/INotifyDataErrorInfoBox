@@ -61,7 +61,7 @@
 
         protected virtual void OnErrorsChanged(DataErrorsChangedEventArgs e)
         {
-            this.ErrorsChanged?.Invoke(this.owner, e);
+            this.ErrorsChanged?.Invoke(this, e);
         }
     }
 }
