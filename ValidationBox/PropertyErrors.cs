@@ -42,11 +42,28 @@
                 _ => new List<object> { error },
                 (_, errors) =>
                 {
-                    errors.Add(error);
+                    if (!errors.Contains(error))
+                    {
+                        errors.Add(error);
+                    }
+
                     return errors;
                 });
 
             this.OnErrorsChanged(new DataErrorsChangedEventArgs(propertyName));
+        }
+
+        public void Remove(string propertyName, Predicate<object> filter)
+        {
+            List<object> errors;
+            if (this.propertyErrors.TryGetValue(propertyName, out errors))
+            {
+                errors.RemoveAll(filter);
+                if (errors.Count == 0)
+                {
+                    this.Clear(propertyName);
+                }
+            }
         }
 
         public void Clear(string propertyName)
