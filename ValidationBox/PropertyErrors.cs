@@ -9,15 +9,14 @@
 
     public class PropertyErrors : INotifyDataErrorInfo
     {
-        private readonly INotifyDataErrorInfo owner;
-        private readonly Type type;
         private static readonly IReadOnlyList<object> EmptyErrors = new object[0];
-
+        private readonly Action<DataErrorsChangedEventArgs> ownerOnErrorsChanged;
+        private readonly Type type;
         private readonly ConcurrentDictionary<string, List<object>> propertyErrors = new ConcurrentDictionary<string, List<object>>();
 
-        public PropertyErrors(INotifyDataErrorInfo owner)
+        public PropertyErrors(INotifyDataErrorInfo owner, Action<DataErrorsChangedEventArgs> ownerOnErrorsChanged)
         {
-            this.owner = owner;
+            this.ownerOnErrorsChanged = ownerOnErrorsChanged;
             this.type = owner.GetType();
         }
 
@@ -40,15 +39,7 @@
             this.propertyErrors.AddOrUpdate(
                 propertyName,
                 _ => new List<object> { error },
-                (_, errors) =>
-                {
-                    if (!errors.Contains(error))
-                    {
-                        errors.Add(error);
-                    }
-
-                    return errors;
-                });
+                (_, errors) => UpdateErrors(error, errors));
 
             this.OnErrorsChanged(new DataErrorsChangedEventArgs(propertyName));
         }
@@ -79,6 +70,17 @@
         protected virtual void OnErrorsChanged(DataErrorsChangedEventArgs e)
         {
             this.ErrorsChanged?.Invoke(this, e);
+            this.ownerOnErrorsChanged(e);
+        }
+
+        private static List<object> UpdateErrors(object error, List<object> errors)
+        {
+            if (!errors.Contains(error))
+            {
+                errors.Add(error);
+            }
+
+            return errors;
         }
     }
 }

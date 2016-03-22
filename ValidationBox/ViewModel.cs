@@ -16,8 +16,7 @@
         public ViewModel()
         {
             this.SearchCommand = new RelayCommand(this.Search);
-            this.errors = new PropertyErrors(this);
-            this.errors.ErrorsChanged += (_, e) => this.OnErrorsChanged(e);
+            this.errors = new PropertyErrors(this, this.OnErrorsChanged);
         }
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
