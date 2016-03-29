@@ -1,4 +1,6 @@
-﻿namespace ValidationBox
+﻿using JetBrains.Annotations;
+
+namespace ValidationBox
 {
     using System;
     using System.Collections;
@@ -20,8 +22,6 @@
         }
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public string SearchText
         {
@@ -45,11 +45,6 @@
 
         public IEnumerable GetErrors(string propertyName) => this.errors.GetErrors(propertyName);
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         private void Search()
         {
             if (string.IsNullOrEmpty(this.searchText))
@@ -64,6 +59,14 @@
         protected virtual void OnErrorsChanged(DataErrorsChangedEventArgs e)
         {
             this.ErrorsChanged?.Invoke(this, e);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
